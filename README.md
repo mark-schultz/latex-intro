@@ -1,2 +1,2 @@
 # latex-intro
-An introduction to LaTeX
+A quick introduction to LaTeX.

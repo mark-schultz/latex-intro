@@ -1,0 +1,358 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{fullpage}
+\usepackage{hyperref}
+\usepackage{lipsum}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\begin{document}
+\title{An Introduction to \LaTeX}
+\author{Mark Schultz}
+\maketitle
+\LaTeX\ is a typesetting system that gives people immense control over what they do (especially compared to things like Word).
+That being said, it's much closer to coding than normal Word documents are, so it can have a rather steep learning curve.
+Things like ``starting a new paragraph'', ``right aligning text'', or "making quotations work correctly\footnote{See the left quotation on this.}" can be unfortunately difficult to do.
+This is a (non-exhaustive) introduction to doing some really basic stuff.
+\section{Making a \LaTeX\ Document}
+LaTex documents are separated into two distinct portions - the ``Preamble'', and the ``Body''.
+Here's a simple document (it could be saved as ``exampledocument.tex'', the important part is that it's saved as a .tex file.)
+\begin{verbatim}
+    \documentclass{article}
+
+    \usepackage{amsmath}
+    \usepackage{fullpage}
+
+    \newcommand{\limn}{\lim_{n\to\infty}}
+    \newcommand{\paren}[1]{\left( #1 \right)}
+
+    \title{An Example Document}
+    \author{Mark Schultz}
+    \date{4/20/69}
+
+    \begin{document}
+      \maketitle
+      This is the Body of the document
+    \end{document}
+\end{verbatim}
+\subsection{Preamble}
+The preamble is where all of the ``behind the scenes stuff'' happens.
+Plenty of stuff in \LaTeX\ will be written in the document, but won't be directly typeset.
+The preamble is ``everything above the $\backslash\text{begin}\{\text{document}\}$'', so in the above it includes four distinct sections:
+\subsubsection{Setting the Document Class}
+ The first section is the single line:
+       \begin{verbatim}
+      \documentclass{article}
+ \end{verbatim}
+ This tell \LaTeX\ what kind of document you want to make.
+ There are various options (ones for posters, for slideshows, for books, etc.), and you can even define your own (although I'm particularly bad with that).
+ The important ones for a beginner are:
+ \begin{itemize}
+  \item $\backslash\text{documentclass}\{\text{article}\}$ - for generic problem set type things (the title only takes up a small part of the first page is a notable thing).
+  \item $\backslash\text{documentclass}\{\text{report}\}$ - allows for various chapters as well.
+        This might be good for a thesis.
+ \end{itemize}
+ You can pass various options to this as well, such as:
+ \begin{verbatim}
+      \documentclass[12pt,a4paper]{article}
+ \end{verbatim}
+ will both modify the default fontsize of the document, as well as the paper it's formatted for (a4 is the European standard.  The default is letterpaper, the American standard).
+ A full list of options you can pass to this (and different kinds of document classes, like article and report) can be found at:
+
+ \url{https://en.wikibooks.org/wiki/LaTeX/Document_Structure#Document_classes}
+
+ It's important to note that LaTeX documents \textbf{MUST} start with a document class.
+ The rest of the stuff in the preamble can be reordered however you like (although I think the way I present it is a good way to learn).
+ This must come first though.
+ \subsubsection{Importing Packages}
+       The next section involves various package declarations.
+       In the example document I have, it looks like:
+       \begin{verbatim}
+    \usepackage{amsmath}
+    \usepackage{fullpage}
+ \end{verbatim}
+ This imports two packages, ``amsmath'' and ``fullpage'', to be used in the document.
+ amsmath is a set of enhancements to LaTeX that are useful to mathematicians (AMS is the American Mathematical Society).
+ The ``fullpage'' package changes the margins to be smaller (wide margins are very common in journal articles, and are the default for LaTeX).
+ The Reed Thesis template has information about packages that are more useful for Chem majors.
+ That entire page is found here: \url{http://www.reed.edu/cis/help/LaTeX/thesis}
+
+ \subsubsection{Defining Macros}
+       The section:
+       \begin{verbatim}
+    \newcommand{\limn}{\lim_{n\to\infty}}
+    \newcommand{\paren}[1]{\left( #1\right)}
+ \end{verbatim}
+ defines two new commands.
+ \newcommand{\limn}{\lim_{n\to\infty}}
+ One, ``limn'', is is shorthand for:
+ \begin{equation}
+  \lim_{n\to\infty}
+ \end{equation}
+ We can normally do this by writing:
+ \begin{verbatim}
+    \begin{equation}
+      \lim_{n\to\infty}
+    \end{equation}
+ \end{verbatim}
+ Instead, we can define a macro to do this for us.
+ That's what the ``newcommand'' does.
+ Then, we can just write:
+ \begin{verbatim}
+    \begin{equation}
+      \limn
+    \end{equation}
+ \end{verbatim}
+ and it's equivalent to the first thing.
+ Note here that we wrapped our command in an \textbf{equation} environment, which led to it being numbered, on it's own line, and centered.
+
+ The ``paren'' command I defined is a little different.
+ In LaTeX, we can write things like this:
+ \begin{verbatim}
+   \begin{equation}
+     f(x) = (\frac{x}{6})^2
+   \end{equation}
+ \end{verbatim}
+ which displays like:
+ \begin{equation}
+   f(x) = (\frac{x}{6})^2
+ \end{equation}
+ The parenthesis for this are clearly missized.
+ We can fix this by writing:
+ \begin{verbatim}
+   f(x) = \left( \frac{x}{6} \right)^2
+ \end{verbatim}
+ which renders as:
+ \begin{equation}
+   f(x) = \left(\frac{x}{6}\right)^2
+ \end{equation}
+ You do this very frequently (using what's called ``paired delimiters'') in Math.
+ Enough that defining it's own macro is probably worthwhile:
+\begin{verbatim}
+  f(x) = \paren{\frac{x}{6}}^2
+\end{verbatim}
+Macros also have the benefit of making it easy to modify things later.
+If you decide that:
+\begin{equation}
+  f(x) = \left[\frac{x}{6}\right]^2
+\end{equation}
+looks better later, all you have to do is change how the macro is defined, instead of changing each time you use that notation.
+
+You can either define macros to take no inputs (like ``limn''), or any number of arguments.
+As an example:
+\begin{verbatim}
+  \newcommand{\quadeq}[3]{#1 x^2 + #2 x + #3}
+  \newcommand{\quadform}[3]{\frac{- #2 \pm \sqrt{#2^2-4(#1)(#3)}{2(#1)}}}
+\end{verbatim}
+\newcommand{\quadeq}[3]{#1 x^2 + #2 x + #3}
+\newcommand{\quadform}[3]{\frac{- #2 \pm \sqrt{#2^2-4(#1)(#3)}}{2(#1)}}
+defines a pair of macros that take information about a quadratic equation, and formats it nicely.
+As an example:
+\begin{verbatim}
+  \begin{equation}
+    \quadeq{1}{2}{3}
+  \end{equation}
+  \begin{equation}
+    \quadform{1}{2}{3}
+  \end{equation}
+\end{verbatim}
+will display as:
+\begin{equation}
+  \quadeq{1}{2}{3}
+\end{equation}
+\begin{equation}
+  \quadform{1}{2}{3}
+\end{equation}
+This obviously isn't perfect, but shows how we can have macros with multiple arguments.
+ \subsubsection{Setting Author Info}
+LaTeX has a default way to display the title, author, date, etc for a paper.
+This is done with:
+\begin{verbatim}
+  \author{<name>}
+  \title{<title>}
+  \date{<date>}
+\end{verbatim}
+Then, when you want to put the title in the actual document, you type $\backslash\text{maketitle}$.
+\subsection{Body}
+The ``Body'' is contained entirely between the ``$\backslash\text{begin}\{\text{document}\}$'' and ``$\backslash\text{end}\{\text{document}\}$'' statements.
+This is where you write your document.
+The format:
+\begin{verbatim}
+    \begin{<word>}
+      ... stuff goes here ...
+    \end{<word>}
+\end{verbatim}
+shows up a lot in LaTeX.
+It's called an \textbf{environment}.
+The equation environment used before is another example of this.
+A few tips for basic typesetting with LaTeX:
+\begin{itemize}
+  \item Paragraph breaks can be hard to understand for beginners.
+  One thing to keep in mind is that linebreaks don't lead to paragraph breaks.
+  Typing:
+  \begin{verbatim}
+    This is line 1.
+    Is this line 2?
+  \end{verbatim}
+  Will result in:
+
+  This is line 1.
+  Is this line 2?
+
+  To do a paragraph break, the easiest thing to do is to leave an empty line between two sentences.
+  As an example, useing a Lorem Ipsum package, we can write;
+  \begin{verbatim}
+    \lipsum[1]
+
+    \lipsum[1]
+  \end{verbatim}
+  displays as:
+
+  \lipsum[1]
+
+  \lipsum[1]
+
+  The extra empty line between these leads to a new paragraph.
+  \item
+  Changing text (bolding, italicizing, etc.) can be hard two understand.
+  The easiest way to do this (in my opinion) is as follows:
+  \begin{verbatim}
+    This text is \textbf{bold}.
+  \end{verbatim}
+  Which displays as:
+
+  This text is \textbf{bold}.
+
+  Italicizing works similarly, but with \verb|\textit{<word>}|.
+  A reference on this can be found here:
+
+  \url{https://www.sharelatex.com/learn/Bold,_italics_and_underlining}
+
+  \item Including pictures can be done with the \verb|\includegraphics{file_name.png}| command.
+  Doing only this can result in stuff like this:
+
+  \includegraphics[scale = 1]{orange-square.png}
+  This picture is outrageously too large.
+  We can fix this by writing
+
+  \verb|includegraphics[scale = .05]{orange-square.png}| (instead of \verb|scale = 1|), to get:
+  \includegraphics[scale = .05]{orange-square.png}.
+  If we want this as it's own thing, there's two real options - figures, and a center environment.
+
+  The center environment is:
+  \begin{verbatim}
+    \begin{center}
+      \includegraphics[scale = .05]{orange-square.png}
+    \end{center}
+  \end{verbatim}
+  \begin{center}
+    \includegraphics[scale = .05]{orange-square.png}
+  \end{center}
+  Figures are a more ``official'' way of doing things, but have notorious issues (you can't specify \emph{exactly}) where a figure will show up, only within a page or two.
+  Latex will try to find a natural place to put it approximately where you ask it to.
+  This is a good resource on both figures and graphics:
+
+  \url{https://www.sharelatex.com/learn/Inserting_Images}
+  \item
+  Numbering things and bullet points are done in two different environments.
+  Numbering is done in enumerate:
+  \begin{verbatim}
+    \begin{enumerate}
+      \item This is the first item.
+      \item This is the second.
+      \item[4] This one is numbered 4.
+      \item[cow] Now this is just getting silly.
+    \end{enumerate}
+  \end{verbatim}
+  \begin{enumerate}
+    \item This is the first item.
+    \item This is the second.
+    \item[4] This one is numbered 4.
+    \item[cow] Now this is just getting silly.
+  \end{enumerate}
+  In general, you can have LaTeX skip numbers without have to write all the subsequent number manually.
+  You can also easily change from using arabic numerals, to roman numarals, to plenty of other systems.
+  See here for more info:
+
+  \url{https://www.sharelatex.com/learn/Lists}
+
+  \item Bullets are similar to numbering:
+  \begin{verbatim}
+    \begin{itemize}
+      \item First bullet
+      \item Second bullet
+    \end{itemize}
+  \end{verbatim}
+  \begin{itemize}
+    \item First bullet
+    \item Second bullet
+  \end{itemize}
+  The above url is also a good resource for this.
+
+  \item
+  The last thing to talk about is probably math mode.
+  Latex has 3 different kinds of ``modes'' you can write text in:
+  \begin{enumerate}
+    \item Text mode -
+    This is the default, and what I've typed all this text in so far.
+    This is the basic wordprocessing thing for LaTeX.
+    \item Inline math mode.
+    Have you ever just wanted to say ``And she was such a $f'''(x)$?''
+    Probably not.
+    But, intermingling math with text happens fairly frequently.
+    To do this, we write:
+    \begin{verbatim}
+      Let $f(x)$ be a continuous function from $\mathbb{R}\to\mathbb{R}$
+    \end{verbatim}
+    to get:
+
+    Let $f(x)$ be a continuous function from $\mathbb{R}\to\mathbb{R}$\footnote{This requires the package amssymb.}.
+
+    \item (other) math mode.
+    This is how you write math as a block all by itself, like:
+    \begin{equation}
+      f(x) = \begin{cases} x & x > 0 \\ 0 & \text{else}\end{cases}
+    \end{equation}
+    The above example is in an equation, environemtn, and while the LaTeX that created it seems a little complicated:
+    \begin{verbatim}
+      \begin{equation}
+        f(x) = \begin{cases} x & x > 0 \\ 0 & \text{else}\end{cases}
+      \end{equation}
+    \end{verbatim}
+    It's very similar to how you make matrices, so if you get comfortable with that this becomes easier ``for free''.
+    You may also sometimes want a few lines of math in a row.
+    We can do this with:
+    \begin{verbatim}
+      \begin{align}
+        f(x) = (x+1)^2 \\
+        = x^2 + 2x + 1
+      \end{align}
+    \end{verbatim}
+    Here, \verb|\\| denotes a linebreak.
+    \begin{align}
+      f(x) = (x+1)^2 \\
+      = x^2 + 2x + 1
+    \end{align}
+    This is very common throughout LaTeX.
+    We may not want each line to be numbered for this (or for single line equations), in which case we use \verb|\begin{align*} ... \end{align*}| or
+
+    \verb|\begin{equation*} ... \end{equation*}|.
+    Additionally, it's often considered aesthetically pleasing to align all of your equals signs.
+    We can do this with an align environment:
+    \begin{verbatim}
+      \begin{align*}
+        f(x) &= x + 1 \\
+        f(3) & = 3 + 1  \\
+        &= 4
+      \end{align*}
+    \end{verbatim}
+    \begin{align*}
+      f(x) &= x + 1 \\
+      f(3) & = 3 + 1  \\
+      &= 4
+    \end{align*}
+    Here, we use an \verb|&| on each line to tell LaTeX where to line things up at.
+  \end{enumerate}
+\end{itemize}
+That's really all the basics of making LaTeX documents.
+\end{document}
